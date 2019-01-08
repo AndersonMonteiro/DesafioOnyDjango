@@ -1,0 +1,26 @@
+FROM python:3.7-alpine
+
+RUN pip install -U pipenv
+
+# Project Files and Settings
+ARG PROJECT=empresas
+ARG PROJECT_DIR=/var/www/${PROJECT}
+
+RUN mkdir -p $PROJECT_DIR
+WORKDIR $PROJECT_DIR
+COPY Pipfile Pipfile.lock ./
+RUN pipenv install --system
+COPY empresas/ .
+
+# .env creation
+ENV DJANGO_CONFIGURATION Production
+ENV SECRET_KEY='wq9j93ziqrg1f95a*=e5_r)+d#iwud#l^*rag3zd-al638y5bs'
+RUN python manage.py migrate
+RUN python manage.py loaddata fixture_data.json
+RUN mkdir -p static && python manage.py collectstatic --no-input
+
+# Server
+ENV PORT 8001
+EXPOSE $PORT
+STOPSIGNAL SIGINT
+CMD gunicorn --bind 0.0.0.0:$PORT empresas.wsgi:application

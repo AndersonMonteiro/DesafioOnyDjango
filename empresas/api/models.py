@@ -3,7 +3,7 @@ from django.db import models
 class Empresa(models.Model):
     """Classe que representa a model Empresa"""
     cnpj = models.CharField(max_length=15, primary_key=True)
-    nome = models.CharField(max_length=200)
+    nome_empresa = models.CharField(max_length=200)
     cep = models.CharField(max_length=8)
     logradouro = models.CharField(max_length=200)
     numero = models.CharField(max_length=200)

@@ -1,0 +1,33 @@
+version: "3"
+services:
+    empresas:
+        container_name: des-onyo-empresas
+        build:
+            context: .
+            dockerfile: Dockerfile.empresas
+        volumes:
+            - ./empresas:/var/www/empresas
+        image: registry.heroku.com/des-onyo-empresas/web
+        stdin_open: true
+        tty: true
+        ports:
+            - "8001:8001"
+        environment:
+            PORT: "8001"
+            DJANGO_CONFIGURATION: Dev
+    promocao:
+        container_name: des-onyo-promocao
+        build:
+            context: .
+            dockerfile: Dockerfile.promocao
+        volumes:
+            - ./promocao:/var/www/promocao
+        image: registry.heroku.com/des-onyo-promocao/web
+        stdin_open: true
+        tty: true
+        ports:
+            - "8002:8002"
+        environment:
+            PORT: "8002"
+            DJANGO_CONFIGURATION: Dev
+            EMPRESA_URL: http://localhost:8001/api/v1/empresas/

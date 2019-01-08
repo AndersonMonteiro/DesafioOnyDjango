@@ -5,11 +5,11 @@ from configurations import Configuration
 
 load_dotenv(find_dotenv())
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).parent.parent
 
 class Config(Configuration):
-    SECRET_KEY = '@5j_82@0g@+x0ydb!*$wwc8#!usk=u_rvhk%_@)sy-e^#z)gs='
-    #SECRET_KEY = os.environ['SECRET_KEY']
+    SECRET_KEY = os.environ['SECRET_KEY']
+    EMPRESA_URL = os.environ['EMPRESA_URL']
     DEBUG = True
     ALLOWED_HOSTS = []
     INSTALLED_APPS = [
@@ -91,9 +91,19 @@ class Test(Config):
     }
 
 
-# class Prod(Config):
-#     ALLOWED_HOSTS = ['']
-#     STATIC_ROOT = str(BASE_DIR / 'staticfiles')
-#     STATICFILES_DIRS = [
-#         str(BASE_DIR / "static"),
-#     ]
+class Prod(Config):
+    ALLOWED_HOSTS = ['des-onyo-promocao.herokuapp.com']
+    STATIC_ROOT = str(BASE_DIR / 'staticfiles')
+    STATICFILES_DIRS = [
+        str(BASE_DIR / "static"),
+    ]
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #         'NAME': 'dbpr6tqgkuhuo3',
+    #         'USER': 'rbktrfeehyxvhv',
+    #         'PASSWORD': 'bea3e32c796c88037ecb53ceb5ccff5b2bc292811e7a00b5c27fc6aa80182fa7',
+    #         'HOST': 'ec2-107-20-183-142.compute-1.amazonaws.com',
+    #         'PORT': '5432',
+    #     }
+    # }

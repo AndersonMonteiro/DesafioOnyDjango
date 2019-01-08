@@ -1,8 +1,6 @@
-from django.shortcuts import render
-
 import json
 from requests import get
-#from django.conf import settings
+from django.conf import settings
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import permissions, serializers
 from rest_framework.decorators import api_view
@@ -10,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from .models import Promocao
 from .serializers import PromocaoSerializer
+import logging
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -18,10 +17,10 @@ def api_root(request, format=None):
     })
 
 
-def _on_create_or_update(serializer):
+def _perform_create_or_update(serializer):
     data = serializer.validated_data
-#    response = get('{}{}/'.format(settings.CEP_URL, data['cep']))
-    response = get('http://127.0.0.1:8000/api/v1/empresas/45543915006122.json')
+    response = get('{}{}/'.format(settings.EMPRESA_URL, data['cnpj']))
+    # response = get('http://127.0.0.1:8000/api/v1/empresas/45543915006122.json')
     if response.status_code != 200:
         data = json.loads(response.content)
         data['detail'] = 'CNPJ: ' + data['detail']
@@ -29,7 +28,7 @@ def _on_create_or_update(serializer):
     url_adress = json.loads(response.content)
     url_adress.pop('url')
     data.update(url_adress)
-    serializer.save() 
+    serializer.save()
     return
 
 class PromocaoList(ListCreateAPIView):
@@ -37,16 +36,17 @@ class PromocaoList(ListCreateAPIView):
     queryset = Promocao.objects.all()
     serializer_class = PromocaoSerializer
 
-    def on_create(self, serializer):
-        _on_create_or_update(serializer)
+    def perform_create(self, serializer):
+        _perform_create_or_update(serializer)
         return
     
+
 class PromocaoDetail(RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
     queryset = Promocao.objects.all()
     serializer_class = PromocaoSerializer
 
-    def perform_create(self, serializer):
-        _on_create_or_update(serializer)
+    def perform_update(self, serializer):
+        _perform_create_or_update(serializer)
         return
         

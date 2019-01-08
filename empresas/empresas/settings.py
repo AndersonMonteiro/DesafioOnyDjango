@@ -2,6 +2,8 @@ import os
 from configurations import Configuration
 from dotenv import load_dotenv, find_dotenv
 from pathlib import Path
+import django_heroku 
+
 
 load_dotenv(find_dotenv())
 
@@ -9,6 +11,7 @@ load_dotenv(find_dotenv())
 BASE_DIR = Path(__file__).parent.parent
 
 class Config(Configuration):
+    django_heroku.settings(locals())
     SECRET_KEY = 'wq9j93ziqrg1f95a*=e5_r)+d#iwud#l^*rag3zd-al638y5bs'
     DEBUG = True
     ALLOWED_HOSTS = []
@@ -103,3 +106,13 @@ class Prod(Config):
     STATICFILES_DIRS = [
         str(BASE_DIR / "static"),
     ]
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'dfaf81lba8qt3',
+            'USER': 'uxnsmptnuzysal',
+            'PASSWORD': '879fb7540d668d53148a294aa725527f63eb45cfdc5a99cd1ab1746ea1f81379',
+            'HOST': 'ec2-54-235-77-0.compute-1.amazonaws.com',
+            'PORT': 5432,
+        }
+    }    
